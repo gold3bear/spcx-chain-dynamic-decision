@@ -8,3 +8,4 @@ build/
 dist/
 reports/
 *.local.json
+webreport/out/

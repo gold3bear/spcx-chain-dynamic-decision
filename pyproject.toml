@@ -13,6 +13,7 @@ authors = [{ name = "Bear Xiong" }]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+report = ["playwright>=1.40", "Pillow>=10"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
