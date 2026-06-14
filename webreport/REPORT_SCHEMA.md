@@ -21,5 +21,20 @@ Keys rendered in order: `spcx, macro, mapped_stocks, fundamental, sats_gs_supply
 (generic tables), then `daily_review` ([{q, answer}]).
 Row `state` ∈ {ok, warn, stale, watch, na}; `stale`/`na`/missing → grey "待补".
 
+## `narrative_tree` (drives the hero decision-tree page + playback)
+- `days`: [ { date, wordfreq:{a,b,c,d} } ] — per-day narrative word frequency for playback. Last day == top-level `narrative_wordfreq` (single source).
+- `now`: date string; equals `days[-1].date`.
+- `nodes`: [ {
+    id, label, phase, `tense` ∈ {past, present, future}, date, intensity (0-100),
+    tickers (card ids this narrative implicates),
+    detail,
+    // future-only: prob (0..1), prob_source ("polymarket:<slug>" or null),
+    //              trigger, invalidation, expected_return, risk
+  } ] — exactly one `present` node; ≥1 `past`; ≥2 `future`.
+- `edges`: [ { from, to, `tense` ∈ {past, present, future}, prob? (0..1) } ].
+
+Layout is precomputed (vertical time axis, top=past → bottom=future); no force layout, no third-party lib.
+Branch `prob` may be overwritten from Polymarket by `enrich.py`; the browser never fetches.
+
 ## Page count
-`pages = 14 + len(cards)` (cover + 3 maps + timeline + board = 6; + N cards; + 6 dashboards + daily_review = 7; + closing = 1).
+`pages = 15 + len(cards)` (cover + phase-map + narrative-cycle + narrative-tree + opponent + timeline + board = 7; + N cards; + 6 dashboards + daily_review = 7; + closing = 1).

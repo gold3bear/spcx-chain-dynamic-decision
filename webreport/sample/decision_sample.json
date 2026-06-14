@@ -7,6 +7,31 @@
   "regime": "mechanical_bid",
   "narrative_cycle": "saturation",
   "narrative_wordfreq": { "a": 70, "b": 35, "c": 28, "d": 18, "bc_gt_a_consecutive_days": 0 },
+  "narrative_tree": {
+    "days": [
+      { "date": "2026-06-10", "wordfreq": { "a": 85, "b": 10, "c": 8, "d": 4 } },
+      { "date": "2026-06-11", "wordfreq": { "a": 82, "b": 18, "c": 12, "d": 6 } },
+      { "date": "2026-06-12", "wordfreq": { "a": 78, "b": 24, "c": 18, "d": 9 } },
+      { "date": "2026-06-13", "wordfreq": { "a": 74, "b": 30, "c": 24, "d": 14 } },
+      { "date": "2026-06-14", "wordfreq": { "a": 70, "b": 35, "c": 28, "d": 18 } }
+    ],
+    "now": "2026-06-14",
+    "nodes": [
+      { "id": "n_wealth", "label": "财富神话主导", "phase": "a", "tense": "past", "date": "2026-06-10", "intensity": 85, "tickers": ["spcx"], "detail": "IPO 首日财富效应主导，散户 FOMO 入场。" },
+      { "id": "n_drain", "label": "解禁/抽血叙事抬头", "phase": "b", "tense": "past", "date": "2026-06-12", "intensity": 30, "tickers": ["spcx"], "detail": "首批 20% 解禁 + xAI 亏损预期升温，B 叙事开始抽 A 的血。" },
+      { "id": "n_now", "label": "泡沫集中度 · 机械买盘", "phase": "c", "tense": "present", "date": "2026-06-14", "intensity": 70, "tickers": ["spcx"], "detail": "MSCI/NDX 机械买盘日历未走完，散户被邀请提供退出流动性。" },
+      { "id": "f_falsify", "label": "证伪 / 泡沫破裂", "phase": "falsification", "tense": "future", "date": "2026-08", "prob": 0.30, "prob_source": "polymarket:spcx-below-150-2026", "trigger": "xAI 季亏 >50亿 且 SPCX 收破 150", "invalidation": "连续30个交易日收 >180", "expected_return": "Phase2 空头 +25% ~ +40%", "risk": "绿鞋护盘/逼空；止损 SPCX 收 >180", "tickers": ["spcx"] },
+      { "id": "f_vertical", "label": "垂直迁移 → 卫星制造", "phase": "d", "tense": "future", "date": "2026-07", "prob": 0.35, "prob_source": "polymarket:space-rotation-2026", "trigger": "D 词频连续 3 日超 A", "invalidation": "SPCX 重新虹吸流动性", "expected_return": "RKLB/ASTS/SATS 多头 +15% ~ +30%", "risk": "二元发射事件失败 → ASTS 崩；分散建仓", "tickers": ["rklb", "asts", "sats"] },
+      { "id": "f_mechanical", "label": "继续机械买盘", "phase": "c", "tense": "future", "date": "2026-07-06", "prob": 0.35, "prob_source": "polymarket:spcx-ndx-inclusion-2026", "trigger": "NDX 纳入完成前日历买盘持续", "invalidation": "绿鞋到期(7/11)后买盘枯竭", "expected_return": "SPCX 钝化上行 +5% ~ +12%", "risk": "纳入兑现即见光死；不追多", "tickers": ["spcx"] }
+    ],
+    "edges": [
+      { "from": "n_wealth", "to": "n_drain", "tense": "past" },
+      { "from": "n_drain", "to": "n_now", "tense": "present" },
+      { "from": "n_now", "to": "f_falsify", "tense": "future", "prob": 0.30 },
+      { "from": "n_now", "to": "f_vertical", "tense": "future", "prob": 0.35 },
+      { "from": "n_now", "to": "f_mechanical", "tense": "future", "prob": 0.35 }
+    ]
+  },
   "opponent_model": {
     "likely_counterparty": "underwriter",
     "retail_position": "disadvantage",
