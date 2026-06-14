@@ -1,0 +1,98 @@
+{
+  "analysis_as_of": "2026-06-14",
+  "report_title": "SPCX 航天链 · 每日博弈地图",
+  "overall_stance": "不追多 · 不急空 · 先冻结",
+  "active_phase": "phase_0",
+  "phase_note": "FOMC 冻结期内，无券、无真实期权链，物理上不可执行新空单。",
+  "regime": "mechanical_bid",
+  "narrative_cycle": "saturation",
+  "narrative_wordfreq": { "a": 70, "b": 35, "c": 28, "d": 18, "bc_gt_a_consecutive_days": 0 },
+  "opponent_model": {
+    "likely_counterparty": "underwriter",
+    "retail_position": "disadvantage",
+    "liquidity_trap_risk": "high",
+    "why_this_price": "绿鞋稳定 + MSCI/NDX 机械买盘日历未走完，散户被邀请提供退出流动性。"
+  },
+  "timeline": [
+    { "date": "2026-06-17", "event": "ASTS BlueBird 8-10 发射（二元事件）", "status": "upcoming" },
+    { "date": "2026-06-19", "event": "SPCX 期权/融券可能开放", "status": "upcoming" },
+    { "date": "2026-07-06", "event": "SPCX NDX 纳入完成", "status": "upcoming" },
+    { "date": "2026-07-11", "event": "绿鞋到期", "status": "upcoming" },
+    { "date": "2026-08", "event": "Q2 财报 + 首批 20% 解禁 + xAI 亏损", "status": "upcoming" }
+  ],
+  "cards": [
+    { "id": "spcx_long", "label": "SPCX 条件多头", "status": "WATCH", "direction": "long",
+      "gates": { "data": "pass", "time": "fail", "structure": "na", "narrative": "na", "rr": "na" },
+      "blocking_field": "价格未回落到 105-107.5 且 RSI 未 <35", "distance_to_trigger": "今日 161 / RSI 58",
+      "invalidation": "xAI 季亏确认 >50亿 前入场则降级", "changed_today": false },
+    { "id": "spcx_phase2_short", "label": "SPCX Phase2 空头", "status": "FREEZE", "direction": "short",
+      "gates": { "data": "pass", "time": "fail", "structure": "fail", "narrative": "na", "rr": "na" },
+      "blocking_field": "Phase 0：6/19 前无券、无真实期权链", "distance_to_trigger": "需绿鞋撤(7/11)+收破150；今日 161",
+      "invalidation": "连续30个交易日收>180", "changed_today": false },
+    { "id": "rklb", "label": "RKLB", "status": "FREEZE", "direction": "none",
+      "gates": { "data": "pass", "time": "fail", "structure": "na", "narrative": "na", "rr": "na" },
+      "blocking_field": "6/22 前 NDX 纳入未完成", "distance_to_trigger": "6/22 后重启评估",
+      "invalidation": "—", "changed_today": false },
+    { "id": "asts", "label": "ASTS", "status": "FREEZE", "direction": "none",
+      "gates": { "data": "pass", "time": "fail", "structure": "na", "narrative": "na", "rr": "na" },
+      "blocking_field": "6/17 BlueBird 8-10 发射前（二元事件）", "distance_to_trigger": "发射后再评估",
+      "invalidation": "—", "changed_today": false },
+    { "id": "sats", "label": "SATS", "status": "WATCH", "direction": "none",
+      "gates": { "data": "pass", "time": "na", "structure": "fail", "narrative": "na", "rr": "na" },
+      "blocking_field": "锁定条款 / 交割路径 / 税后净值三件套未核清", "distance_to_trigger": "三件套任一核清",
+      "invalidation": "SPCX 收盘 <108 → NAV 分子坍塌，冻结", "changed_today": false },
+    { "id": "dxyz", "label": "DXYZ 代理", "status": "RETIRE", "direction": "none",
+      "gates": { "data": "na", "time": "na", "structure": "na", "narrative": "na", "rr": "na" },
+      "blocking_field": "本体已上市，代理溢价逻辑失效", "distance_to_trigger": "—",
+      "invalidation": "已退役", "changed_today": false },
+    { "id": "tsla_spacex_merger", "label": "TSLA / SPCX 合并概念", "status": "WATCH", "direction": "long",
+      "gates": { "data": "pass", "time": "na", "structure": "fail", "narrative": "pass", "rr": "fail" },
+      "blocking_field": "无签署协议、无换股比例 → R/R 不可算", "distance_to_trigger": "8-K/S-4 或特别委员会公告 + 换股比例",
+      "invalidation": "马斯克/董事会否认或搁置；不利少数股东比例；诉讼冻结", "changed_today": true }
+  ],
+  "dashboards": {
+    "spcx": [
+      { "metric": "收盘价", "threshold": "150", "value": "161", "state": "ok" },
+      { "metric": "收盘价", "threshold": "135 破发线", "value": "161", "state": "ok" },
+      { "metric": "RSI(14)", "threshold": "<35 超卖 / >75 亢奋", "value": "58", "state": "ok" },
+      { "metric": "借券费率", "threshold": ">15%/年", "value": "—", "state": "na" }
+    ],
+    "macro": [
+      { "metric": "FOMC 语气", "observation": "是否偏鹰", "value": "待 6/16-17", "state": "na" },
+      { "metric": "US10Y", "observation": "FOMC 后是否上行破前高", "value": "—", "state": "na" },
+      { "metric": "VIX", "observation": "是否升高且 QQQ 同跌", "value": "—", "state": "na" }
+    ],
+    "mapped_stocks": [
+      { "ticker": "RKLB", "trigger": "6/22 前 NDX 未完成", "value": "禁止双向", "state": "warn" },
+      { "ticker": "ASTS", "trigger": "6/17 发射前", "value": "不建仓", "state": "warn" },
+      { "ticker": "PL/RDW", "trigger": "6/26 前是否回吐 6/12 涨幅", "value": "—", "state": "na" }
+    ],
+    "fundamental": [
+      { "metric": "xAI 季亏", "threshold": ">50亿 / >80亿", "value": "—", "state": "na" },
+      { "metric": "Starlink 月净增", "threshold": "<100万 / >200万", "value": "—", "state": "na" },
+      { "metric": "新增关联交易", "threshold": "任意实锤", "value": "无", "state": "ok" }
+    ],
+    "sats_gs_supply": [
+      { "name": "SATS", "check": "持股锁定条款", "value": "未核清", "state": "warn" },
+      { "name": "GS", "check": "绿鞋期内是否破发", "value": "未破发", "state": "ok" },
+      { "name": "GOOGL", "check": "SpaceX-Google 云合同原始条款", "value": "待核", "state": "na" }
+    ],
+    "merger": [
+      { "watchpoint": "合并协议", "trigger": "签署并公告 8-K/S-4", "value": "无", "state": "watch" },
+      { "watchpoint": "换股比例", "trigger": "公开", "value": "无", "state": "watch" },
+      { "watchpoint": "Polymarket tsla_spacex_merger_2026", "trigger": "概率明显抬升", "value": "—", "state": "na" }
+    ],
+    "daily_review": [
+      { "q": "SPCX 是否守住 150/135/108 三条线？", "answer": "守住 150（今日 161）" },
+      { "q": "RSI、VWAP、成交量是否来自真实数据？", "answer": "是" },
+      { "q": "今天走势是宏观刀/机械买盘/个股证伪/叙事切换？", "answer": "机械买盘" },
+      { "q": "FOMC/油价/US10Y/VIX 是否改变风险偏好？", "answer": "待 FOMC" },
+      { "q": "A/B/C/D 词频是否 3 日连续切换？", "answer": "否（A 仍领先）" },
+      { "q": "期权链和借券费率是否真实可用？", "answer": "否（6/19 前）" },
+      { "q": "映射股是领先预警还是各自事件驱动？", "answer": "各自事件驱动" },
+      { "q": "若现在想交易，对手盘是谁、为什么给我这个价？", "answer": "承销商/机械买盘，散户处于劣势" }
+    ]
+  },
+  "disclaimer": "本报告基于截至所示日期的公开数据，不构成投资建议。",
+  "skill_attribution": "spcx-chain-dynamic-decision"
+}
