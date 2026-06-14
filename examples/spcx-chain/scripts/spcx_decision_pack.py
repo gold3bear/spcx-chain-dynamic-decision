@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Create or validate SPCX chain decision evidence packs.
 
-Domain-specific reference implementation of the event-chain-decision framework.
+Domain-specific reference implementation built on a generic event-chain decision framework (the ecd package).
 Date/freshness logic is delegated to ecd.freshness; this file owns only the
 SPCX-specific schema and field checks. It makes no investment decisions.
 """

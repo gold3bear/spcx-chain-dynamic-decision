@@ -13,7 +13,7 @@ Suggested schedule in Asia/Shanghai time:
 Example Windows task for evidence pack validation:
 
 ```powershell
-schtasks /Create /SC DAILY /TN "SPCX Evidence Pack Validate" /ST 06:30 /TR "powershell -NoProfile -ExecutionPolicy Bypass -Command cd D:\projects\event-chain-decision; python examples\spcx-chain\scripts\spcx_decision_pack.py validate --input reports\SPCX_chain_evidence_latest.json"
+schtasks /Create /SC DAILY /TN "SPCX Evidence Pack Validate" /ST 06:30 /TR "powershell -NoProfile -ExecutionPolicy Bypass -Command cd D:\projects\spcx-chain-dynamic-decision; python examples\spcx-chain\scripts\spcx_decision_pack.py validate --input reports\SPCX_chain_evidence_latest.json"
 ```
 
 OpenClaw should then prompt the agent:
