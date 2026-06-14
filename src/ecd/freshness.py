@@ -36,20 +36,23 @@ def trading_days_old(d: date, today: "date | None" = None) -> int:
     """Count weekdays (Mon-Fri) strictly between ``d`` and ``today``.
 
     Friday checked on Monday -> 0 (only Sat/Sun lie strictly between).
-    A future-or-equal date -> 0. Loop is capped at 60 iterations.
+    A future-or-equal date -> 0.
     """
     if today is None:
         today = date.today()
     if d >= today:
         return 0
+    delta_days = (today - d).days
+    if delta_days > 366:
+        # Far stale: exact trading-day count is irrelevant for any realistic
+        # threshold, and this bounds the loop. Return a large, clearly-stale value.
+        return delta_days
     count = 0
     cur = d + timedelta(days=1)
-    iterations = 0
-    while cur < today and iterations < 60:
+    while cur < today:
         if cur.weekday() < 5:
             count += 1
         cur += timedelta(days=1)
-        iterations += 1
     return count
 
 

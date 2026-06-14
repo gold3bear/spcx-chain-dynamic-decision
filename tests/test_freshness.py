@@ -30,7 +30,7 @@ def test_trading_days_future_is_zero():
 
 
 def test_trading_days_ten_days_is_stale():
-    assert trading_days_old(date(2026, 6, 1), today=date(2026, 6, 15)) > 1
+    assert trading_days_old(date(2026, 6, 1), today=date(2026, 6, 15)) == 9
 
 
 def test_block_fresh_when_no_action_values():
@@ -62,3 +62,11 @@ def test_block_has_action_override_for_booleans():
         block, [], "instruments", today=date(2026, 6, 15), has_action=True
     )
     assert len(errors) == 1
+
+
+def test_block_unparseable_timestamp_errors():
+    block = {"close": 147.2, "data_timestamp": "garbage"}
+    errors, warnings = check_block_freshness(
+        block, ["last_price", "close", "rsi_14"], "market_data.SPCX", today=date(2026, 6, 15)
+    )
+    assert len(errors) == 1 and "unparseable" in errors[0]
