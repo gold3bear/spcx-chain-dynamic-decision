@@ -1,0 +1,4 @@
+interface:
+  display_name: "SPCX Chain Dynamic Decision"
+  short_description: "Dynamic agent decision protocol for SPCX chain monitoring"
+  default_prompt: "Use this skill to turn SPCX chain market snapshots into evidence-grounded dynamic decisions."
