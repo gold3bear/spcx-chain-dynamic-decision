@@ -105,3 +105,96 @@ window.renderNarrativeTree = function (page, data, opts) {
     window.attachTreeInteractivity(window.__TREE);
   }
 };
+
+// Interactive layer (browser only; never invoked when STATIC).
+window.attachTreeInteractivity = function (state) {
+  const v = state.v;
+  const days = state.days;
+  const svg = state.wrap.querySelector('svg');
+
+  // --- reveal logic: nodes whose date <= cursor day are active; later spine nodes dim ---
+  function dateKey(s) { return String(s || '').replace(/-/g, ''); }
+  function reveal(idx) {
+    const cutoff = days[idx] ? dateKey(days[idx].date) : '99999999';
+    state.nodes.forEach(n => {
+      const g = svg.querySelector('[data-node="' + n.id + '"]');
+      if (!g) return;
+      let dim = false;
+      if (n.tense === 'past' || n.tense === 'present') {
+        dim = dateKey(n.date) > cutoff;            // not yet reached on the timeline
+      } else {
+        dim = idx < state.lastIdx;                 // futures only show once cursor is at "now"
+      }
+      g.classList.toggle('dim', dim);
+    });
+    state.paintBars(idx);
+  }
+
+  // --- controls ---
+  const ctl = document.createElement('div');
+  ctl.className = 'tctl';
+  const btn = document.createElement('button');
+  btn.textContent = '▶ 播放';
+  const slider = document.createElement('input');
+  slider.type = 'range';
+  slider.min = '0';
+  slider.max = String(state.lastIdx);
+  slider.value = String(state.lastIdx);
+  const dayLab = document.createElement('div');
+  dayLab.className = 'tday';
+  function setDay(i) { dayLab.textContent = (days[i] && days[i].date) || ''; }
+  ctl.appendChild(btn);
+  ctl.appendChild(slider);
+  ctl.appendChild(dayLab);
+  state.page.appendChild(ctl);
+
+  slider.addEventListener('input', () => {
+    const i = Number(slider.value);
+    setDay(i);
+    reveal(i);
+  });
+
+  let timer = null;
+  btn.addEventListener('click', () => {
+    if (timer) { clearInterval(timer); timer = null; btn.textContent = '▶ 播放'; return; }
+    btn.textContent = '⏸ 暂停';
+    let i = 0;
+    slider.value = '0'; setDay(0); reveal(0);
+    timer = setInterval(() => {
+      i += 1;
+      if (i > state.lastIdx) { clearInterval(timer); timer = null; btn.textContent = '▶ 播放'; return; }
+      slider.value = String(i); setDay(i); reveal(i);
+    }, 900);
+  });
+
+  setDay(state.lastIdx);
+  reveal(state.lastIdx);
+
+  // --- detail overlay for future branches ---
+  let overlay = document.getElementById('tdetail');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'tdetail';
+    document.body.appendChild(overlay);
+  }
+  const byId = {};
+  state.nodes.forEach(n => { byId[n.id] = n; });
+  function openDetail(n) {
+    overlay.innerHTML =
+      '<span class="close">×</span>' +
+      '<h3>' + v(n.label) + '</h3>' +
+      '<div class="row"><b>概率</b> ' + (n.prob != null ? Math.round(Number(n.prob) * 100) + '%' : '待补') +
+        (n.prob_source ? '（来源 ' + v(n.prob_source) + '）' : '') + '</div>' +
+      '<div class="row"><b>预期收益</b> ' + v(n.expected_return) + '</div>' +
+      '<div class="row"><b>风险</b> ' + v(n.risk) + '</div>' +
+      '<div class="row"><b>触发</b> ' + v(n.trigger) + '</div>' +
+      '<div class="row"><b>失效</b> ' + v(n.invalidation) + '</div>' +
+      '<div class="row"><b>影响标的</b> ' + ((n.tickers || []).map(t => String(t).toUpperCase()).join(' / ') || '待补') + '</div>';
+    overlay.classList.add('open');
+    overlay.querySelector('.close').addEventListener('click', () => overlay.classList.remove('open'));
+  }
+  state.futures.forEach(n => {
+    const g = svg.querySelector('[data-node="' + n.id + '"]');
+    if (g) g.addEventListener('click', () => openDetail(byId[n.id]));
+  });
+};
