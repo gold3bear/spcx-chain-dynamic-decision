@@ -1,6 +1,6 @@
 """Generic evidence-pack envelope: template + validation.
 
-This is the domain-agnostic core. A concrete chain (see examples/spcx-chain)
+This is the domain-agnostic core. A concrete chain in the skill root
 adds its own domain fields and its own validator, reusing ecd.freshness for
 the action-critical staleness gate. Keep this file free of any domain field.
 """

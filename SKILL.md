@@ -7,9 +7,9 @@ description: Dynamic SPCX / aerospace-chain decision protocol for OpenClaw, Clau
 
 ## Overview
 
-Use this skill to make dynamic agent decisions for the SPCX IPO event chain. Scripts collect and normalize facts; the agent decides what those facts mean, which narrative regime is active, whether any trade card is executable, and what must be rechecked before action.
+Use this skill to make dynamic agent decisions for the SPCX IPO event chain. Collectors and/or browser research collect and normalize facts; the agent decides what those facts mean, which narrative regime is active, whether any trade card is executable, and what must be rechecked before action.
 
-This skill follows the project constitution in `PRINCIPLES.md`: Python computes data, Agent performs judgment, every conclusion is time-anchored, and position sizing must reference `position-sizing-rules`.
+This skill follows the project constitution in `PRINCIPLES.md`: Python computes data, Agent performs judgment, every conclusion is time-anchored, and position sizing must reference `ecd.position_sizing` (see `docs/position-sizing.md`).
 
 The source report is a starting hypothesis, not a target to fit. Every run must update the thesis from current market evidence. If live facts contradict the report, the agent must revise, downgrade, retire, or invert the relevant card instead of explaining the contradiction away.
 
@@ -29,23 +29,41 @@ Start from one of these:
 - A user request such as "run SPCX chain decision today".
 - The source report plus fresh market data.
 
-If no pack exists, run:
+If no pack exists, first try the public best-effort collector:
+
+```bash
+python scripts/collect_evidence_pack.py --out reports/SPCX_chain_evidence_latest.json --validate
+```
+
+If the collector cannot fetch a required field or no collector exists for the field, the Agent must use autonomous browser/web research to fill the evidence pack from primary or reputable structured sources. Record the source and timestamp in `computed.data_sources` or the relevant field note. Do not fabricate licensed-only data such as real borrow availability or full options-chain quality; leave it missing and block `ACT` when it cannot be verified.
+
+For instruments, distinguish three levels:
+- `expected`: news or exchange articles say options/borrow may become available.
+- `visible`: a public page exists but no machine-verifiable chain/fee was captured.
+- `actual`: an exchange, OCC, broker, OPRA, or securities-finance source provides a current chain or borrow fee with timestamp.
+
+Only `actual` may set `instruments.spcx_options_available=true`, `spcx_options_data_quality="actual"`, or `spcx_borrow_available=true`. Public news/search belongs in `computed.instrument_research` and may affect narrative/next checks, but it must not unlock `ACT`.
+
+To create an empty schema template instead, run:
 
 ```bash
 python scripts/spcx_decision_pack.py template --out reports/SPCX_chain_evidence_TEMPLATE.json
 ```
 
-Then fill it with current data or wire a collector to the same schema.
+Then fill it with current data by collector or browser research before making a decision.
 
 ## Workflow
 
 1. Time-anchor the run.
    - Convert relative dates to exact dates.
-   - Reject stale realtime fields older than one trading day for current price, US10Y, options chain, and borrow rate. This rejection is enforced by the validator, not honor-system: `spcx_decision_pack.py validate` writes stale action-critical fields to `computed.freshness_errors` and FAILS validation (exit 1) — a hard block, not a warning.
+   - Reject stale realtime fields older than one trading day for current price, US10Y, options chain, and borrow rate. This rejection is enforced by the validator, not honor-system: `python scripts/spcx_decision_pack.py validate` writes stale action-critical fields to `computed.freshness_errors` and FAILS validation (exit 1) — a hard block, not a warning.
    - State `analysis_as_of` in every output.
 
 2. Build or validate the evidence pack.
-   - Run `spcx_decision_pack.py validate --input <pack.json>`.
+   - Prefer `python scripts/collect_evidence_pack.py --out reports/SPCX_chain_evidence_latest.json --validate`.
+   - If collection is incomplete, browse for missing fields and update the evidence pack with source URLs/names and timestamps.
+   - For options and borrow, use browser/search findings only as `computed.instrument_research` unless an actual chain/fee is visible from an exchange, broker, OPRA, OCC, or securities-finance source.
+   - Run `python scripts/spcx_decision_pack.py validate --input <pack.json>`.
    - Missing fields are decision inputs, not excuses for hallucination.
    - If a missing field is action-critical, return `WATCH` or `FREEZE` and specify the blocking field.
 
@@ -63,7 +81,7 @@ Then fill it with current data or wire a collector to the same schema.
 5. Perform four-lens dynamic assessment.
    - Structure lens: lockup, greenshoe, index inclusion, borrow/option availability.
    - Macro lens: FOMC, US10Y, oil/geopolitics, broad risk appetite.
-   - Narrative lens: A/B/C/D word-frequency rotation, news carrier quality, **and Polymarket cross-validation** (`narrative.polymarket_signals`).
+   - Narrative lens: A/B/C/D word-frequency rotation, front-page financial narrative (`narrative.frontpage_attention`), news carrier quality (`narrative.news_attention`), **and Polymarket cross-validation** (`narrative.polymarket_signals` plus `computed.polymarket_attention`).
    - Market lens: SPCX price/RSI/VWAP/volume, mapped stocks, QQQ/sector relative moves.
 
 6. Challenge the obvious conclusion.
@@ -133,7 +151,9 @@ Do not output an unconditional buy/sell recommendation. Every action must remain
 - Do not act during declared freeze windows unless the evidence pack explicitly says the freeze has ended.
 - Do not use estimated RSI or estimated option IV for action-critical decisions.
 - Do not short low-float SPCX naked; require borrow/option feasibility and squeeze risk analysis.
+- Do not treat an "options expected soon" article, a search-result snippet, or a blocked public borrow page as actual option/borrow availability.
 - Do not size positions by prose. Run the ecd.position_sizing module (see docs/position-sizing.md) after an `ACT` candidate survives all gates.
 - **Polymarket** is L3 auxiliary cross-validation, not executable price. It validates narrative shifts
   alongside word frequency and news carriers; it must never override L1/L2 hard data (price, options chain,
   borrow fee, US10Y, VIX). A Polymarket consensus shift without corroborating hard data or news carrier is noise.
+- **Financial front pages** (for example Yahoo Finance homepage) are L3 macro/narrative attention sources. They help detect the day's dominant market story, but do not replace structured market data or primary filings.

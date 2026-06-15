@@ -28,7 +28,7 @@ implementation; the underlying engine is generic, so you can fork it for any sup
 - **Deterministic position sizing** -- `ecd.position_sizing`, never prose.
 
 ### Layout
-- `examples/spcx-chain/` -- the SPCX reference skill (SKILL.md + references + validator),
+- repository root -- the SPCX reference skill (SKILL.md + references + validator),
   installable as a Claude Code skill.
 - `src/ecd/` -- stdlib-only generic engine (freshness, position sizing, generic envelope).
 - `docs/` -- generic protocol, schema, and sizing docs.
@@ -36,20 +36,21 @@ implementation; the underlying engine is generic, so you can fork it for any sup
 ### Quick start
 ```bash
 pip install -e .
-python examples/spcx-chain/scripts/spcx_decision_pack.py template --out reports/pack.json
-python examples/spcx-chain/scripts/spcx_decision_pack.py validate --input reports/pack.json
+python scripts/spcx_decision_pack.py template --out reports/pack.json
+python scripts/collect_evidence_pack.py --out reports/SPCX_chain_evidence_latest.json --validate
+python scripts/spcx_decision_pack.py validate --input reports/pack.json
 python -m pytest -q
 ```
 (The `reports/` directory is created automatically and is gitignored.)
 
 ### Use it in your agent
 - **Claude Code**: `/loop` each trading day after US close -> daily decision brief.
-- **OpenClaw / Codex / others**: run collectors -> `validate` the evidence pack -> prompt
-  the agent with `examples/spcx-chain/SKILL.md` + the pack. See
-  `examples/spcx-chain/references/runtime-integration.md`. The agent never places orders.
+- **OpenClaw / Codex / others**: run collectors -> browser-fill missing public fields -> `validate` the evidence pack -> prompt
+  the agent with `SKILL.md` + the pack. See
+  `references/runtime-integration.md`. The agent never places orders.
 
 ### Fork your own chain
-1. Copy `examples/spcx-chain/` to `examples/<your-chain>/`.
+1. Copy this repository root to `examples/<your-chain>/`.
 2. Replace the domain fields in the template and the chain validator.
 3. Reuse `ecd.freshness.check_block_freshness` for action-critical staleness.
 4. Keep domain fields out of `src/ecd/` -- that layer stays generic.
@@ -73,7 +74,7 @@ MIT.
 - **确定性仓位** —— 由 `ecd.position_sizing` 计算,绝不用散文拍脑袋。
 
 ### 目录
-- `examples/spcx-chain/` —— SPCX 参考 skill(SKILL.md + references + 校验器),可作为 Claude Code skill 安装。
+- 仓库根目录 —— SPCX 参考 skill(SKILL.md + references + 校验器),可作为 Claude Code skill 安装。
 - `src/ecd/` —— 纯标准库的通用引擎(新鲜度、仓位、通用信封)。
 - `docs/` —— 通用协议/schema/仓位文档。
 
@@ -82,10 +83,10 @@ MIT.
 
 ### 在你的 agent 里使用
 - **Claude Code**:`/loop` 每个交易日收盘后跑一遍,输出当天决策简报。
-- **OpenClaw / Codex / 其他**:采集器产出证据包 → `validate` 把关 → 用 `examples/spcx-chain/SKILL.md` + 证据包提示 agent。详见 `runtime-integration.md`。agent 永不下单。
+- **OpenClaw / Codex / 其他**:采集器产出证据包 → `validate` 把关 → 用 `SKILL.md` + 证据包提示 agent。详见 `runtime-integration.md`。agent 永不下单。
 
 ### 派生你自己的链
-复制 `examples/spcx-chain/` 为 `examples/<your-chain>/`,替换领域字段,复用 `ecd.freshness`,通用层 `src/ecd/` 保持领域无关。
+复制仓库根目录为 `examples/<your-chain>/`,替换领域字段,复用 `ecd.freshness`,通用层 `src/ecd/` 保持领域无关。
 
 ### 许可证
 MIT。

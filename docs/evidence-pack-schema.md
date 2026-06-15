@@ -19,5 +19,5 @@ judgment. The generic envelope is domain-agnostic; a concrete chain extends it.
 2. Add your domain blocks (instruments, narrative signals, hard-data gates).
 3. Write a chain validator that calls `ecd.freshness.check_block_freshness` for
    each action-critical block and merges results, exactly as
-   `examples/spcx-chain/scripts/spcx_decision_pack.py` does.
+   `scripts/spcx_decision_pack.py` does.
 4. Keep domain fields out of `ecd.evidence_pack` — that file stays generic.

@@ -9,3 +9,4 @@ dist/
 reports/
 *.local.json
 webreport/out/
+webreport/sample/decision_*.json

@@ -65,7 +65,7 @@ Never output "still valid" without naming the evidence that keeps it valid.
 
 `WATCH`: Interesting but not executable. Use when triggers are close, evidence conflicts, or the agent needs one more current datapoint.
 
-`ACT`: Rare. Requires all gates to pass, an explicit counterargument review, verified R/R, instrument feasibility, and position sizing via `ecd.position_sizing (see ../../../docs/position-sizing.md)`.
+`ACT`: Rare. Requires all gates to pass, an explicit counterargument review, verified R/R, instrument feasibility, and position sizing via `ecd.position_sizing` (see `docs/position-sizing.md`).
 
 `RETIRE`: The card is no longer valid. Examples: DXYZ proxy thesis invalidated, a card's prerequisite is permanently disproven, or a planned entry already happened without compliant entry.
 

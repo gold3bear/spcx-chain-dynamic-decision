@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "examples" / "spcx-chain" / "scripts" / "spcx_decision_pack.py"
+SCRIPT = ROOT / "scripts" / "spcx_decision_pack.py"
 
 
 def _run(args):

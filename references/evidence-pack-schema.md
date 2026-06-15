@@ -176,6 +176,32 @@ Minimum fields that should be populated on a weekday pack; a null value yields a
 
 Other fields nullable when no contract exists.
 
+## News and Front-Page Attention
+
+Collectors may include narrative attention blocks:
+
+```json
+{
+  "news_attention": {
+    "status": "loaded",
+    "source": "Google News RSS search",
+    "query": "SpaceX SPCX IPO",
+    "group_scores": {"group_a_record_ipo": 100},
+    "carrier_titles": ["..."]
+  },
+  "frontpage_attention": {
+    "status": "loaded",
+    "source": "Yahoo Finance front page",
+    "group_scores": {"macro_market": 41, "group_d_vertical_ai": 100},
+    "carrier_titles": ["..."]
+  }
+}
+```
+
+`news_attention` tracks topic-specific SpaceX/SPCX news. `frontpage_attention` tracks broader daily
+financial-market narratives and can surface macro themes such as Fed, oil, market-wide risk appetite, or
+AI/data-center framing. Both are L3 attention signals and must not override executable hard data.
+
 ## TSLA Dual Role & Merger Card
 
 `market_data.TSLA` is tracked, but it is **not a structural aerospace-chain peer** like RKLB/ASTS/PL/RDW.
@@ -222,6 +248,28 @@ Scripts may emit candidate triggers, but not final decisions:
   ]
 }
 ```
+
+## Instrument Research
+
+Collectors may include public web/search findings under `computed.instrument_research`.
+This is useful for tracking whether options or borrow availability may be approaching,
+but it is not execution-grade by itself:
+
+```json
+{
+  "options_expected_from_public_news": true,
+  "options_status": "Public news/search indicates SPCX options may list or are expected, but collector did not verify an actual option chain.",
+  "options_carriers": ["..."],
+  "borrow_public_page_found": true,
+  "borrow_status": "Public search found borrow/short-interest references, but collector did not verify executable borrow availability or fee.",
+  "borrow_carriers": ["..."],
+  "actionability": "research_only_not_ACT_grade"
+}
+```
+
+Only an exchange/OCC/broker/OPRA chain or broker/securities-finance borrow source may flip
+`instruments.spcx_options_available`, `spcx_options_data_quality="actual"`, or
+`instruments.spcx_borrow_available`.
 
 ## Agent Must Not
 
