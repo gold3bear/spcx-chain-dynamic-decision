@@ -9,7 +9,7 @@ description: Dynamic SPCX / aerospace-chain decision protocol for OpenClaw, Clau
 
 Use this skill to make dynamic agent decisions for the SPCX IPO event chain. Scripts collect and normalize facts; the agent decides what those facts mean, which narrative regime is active, whether any trade card is executable, and what must be rechecked before action.
 
-This skill follows the project constitution in `../../PRINCIPLES.md`: Python computes data, Agent performs judgment, every conclusion is time-anchored, and position sizing must reference `position-sizing-rules`.
+This skill follows the project constitution in `PRINCIPLES.md`: Python computes data, Agent performs judgment, every conclusion is time-anchored, and position sizing must reference `position-sizing-rules`.
 
 The source report is a starting hypothesis, not a target to fit. Every run must update the thesis from current market evidence. If live facts contradict the report, the agent must revise, downgrade, retire, or invert the relevant card instead of explaining the contradiction away.
 
@@ -32,7 +32,7 @@ Start from one of these:
 If no pack exists, run:
 
 ```bash
-python examples/spcx-chain/scripts/spcx_decision_pack.py template --out reports/SPCX_chain_evidence_TEMPLATE.json
+python scripts/spcx_decision_pack.py template --out reports/SPCX_chain_evidence_TEMPLATE.json
 ```
 
 Then fill it with current data or wire a collector to the same schema.
@@ -74,7 +74,7 @@ Then fill it with current data or wire a collector to the same schema.
 7. Decide.
    - `FREEZE`: calendar, data, or tool availability forbids new action.
    - `WATCH`: conditions are not yet executable or evidence is incomplete.
-   - `ACT`: all gates pass; compute position with the ecd.position_sizing module (see ../../docs/position-sizing.md).
+   - `ACT`: all gates pass; compute position with the ecd.position_sizing module (see docs/position-sizing.md).
    - `RETIRE`: a card is invalidated and should be removed from active monitoring.
 
 ## Output Contract
@@ -112,7 +112,7 @@ Return both a concise human summary and a machine-readable JSON block:
   "required_next_checks": ["..."],
   "position_sizing": {
     "status": "not_applicable | required | completed",
-    "source": "ecd.position_sizing (see ../../docs/position-sizing.md)"
+    "source": "ecd.position_sizing (see docs/position-sizing.md)"
   }
 }
 ```
@@ -133,7 +133,7 @@ Do not output an unconditional buy/sell recommendation. Every action must remain
 - Do not act during declared freeze windows unless the evidence pack explicitly says the freeze has ended.
 - Do not use estimated RSI or estimated option IV for action-critical decisions.
 - Do not short low-float SPCX naked; require borrow/option feasibility and squeeze risk analysis.
-- Do not size positions by prose. Run the ecd.position_sizing module (see ../../docs/position-sizing.md) after an `ACT` candidate survives all gates.
+- Do not size positions by prose. Run the ecd.position_sizing module (see docs/position-sizing.md) after an `ACT` candidate survives all gates.
 - **Polymarket** is L3 auxiliary cross-validation, not executable price. It validates narrative shifts
   alongside word frequency and news carriers; it must never override L1/L2 hard data (price, options chain,
   borrow fee, US10Y, VIX). A Polymarket consensus shift without corroborating hard data or news carrier is noise.
